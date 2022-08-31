@@ -526,6 +526,7 @@ func (c ChainCmd) BankSendCommand(fromAddress, toAddress, amount string) step.Op
 		toAddress,
 		amount,
 		optionBroadcastMode, flags.BroadcastSync,
+		"--fees=10000ucommercio",
 		optionYes,
 	)
 
