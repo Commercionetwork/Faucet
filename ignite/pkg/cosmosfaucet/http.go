@@ -17,6 +17,10 @@ func (f Faucet) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	router.Handle("/", cors.Default().Handler(http.HandlerFunc(f.faucetHandler))).
 		Methods(http.MethodPost)
 
+	router.Handle("/give", cors.Default().Handler(http.HandlerFunc(f.comFaucetHandler))).
+		Queries("addr", "{addr}", "amount", "{amount}").
+		Methods(http.MethodGet)
+
 	router.Handle("/info", cors.Default().Handler(http.HandlerFunc(f.faucetInfoHandler))).
 		Methods(http.MethodGet)
 

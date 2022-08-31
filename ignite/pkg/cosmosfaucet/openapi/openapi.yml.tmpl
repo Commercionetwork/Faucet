@@ -33,6 +33,34 @@ paths:
           schema:
             $ref: "#/definitions/SendResponse"
 
+  /give:
+    get:
+      summary: "Send com tokens to addr account"
+      produces:
+      - "application/json"
+      parameters:
+        - in: query
+          name: addr
+          description: address that should receive the tokens
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: amount
+          description: the amount of com tokens that should be sent by the faucet
+          required: true
+          schema:
+            type: int
+      responses:
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Internal error"
+        "200":
+          description: "All coins are successfully sent\n\nAfter making a sample execution, visit the following link to see the difference in sample account's balance: {{ .APIAddress }}/bank/balances/cosmos1uzv4v9g9xln2qx2vtqhz99yxum33calja5vruz"
+          schema:
+            $ref: "#/definitions/SendResponse"
+
 definitions:
   SendRequest:
     type: "object"
