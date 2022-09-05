@@ -163,7 +163,6 @@ func WithNodeAddress(addr string) Option {
 }
 
 // WithFees sets the fees for the commands that needs to make an
-// API request to the node that has a different node address other than the default one.
 func WithFees(fees string) Option {
 	return func(c *ChainCmd) {
 		c.fees = fees
