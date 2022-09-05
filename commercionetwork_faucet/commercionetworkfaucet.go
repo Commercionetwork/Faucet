@@ -79,7 +79,7 @@ func main() {
 	chainCommandOptions := []chaincmd.Option{
 		chaincmd.WithChainID(chainID),
 		chaincmd.WithFees("10000ucommercio"),
-		chaincmd.WithKeyringBackend("test")
+		chaincmd.WithKeyringBackend("test"),
 		//chaincmd.WithNodeAddress("tcp://64.225.78.169:26657"),
 		chaincmd.WithNodeAddress(rpcNode),
 	}
