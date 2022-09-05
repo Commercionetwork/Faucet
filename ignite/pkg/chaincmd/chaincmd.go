@@ -49,6 +49,7 @@ const (
 	optionVestingAmount                    = "--vesting-amount"
 	optionVestingEndTime                   = "--vesting-end-time"
 	optionBroadcastMode                    = "--broadcast-mode"
+	optionFees                             = "--fees"
 
 	constTendermint = "tendermint"
 	constJSON       = "json"
@@ -74,6 +75,7 @@ type ChainCmd struct {
 	cliCmd          string
 	cliHome         string
 	nodeAddress     string
+	fees            string
 	legacySend      bool
 
 	isAutoChainIDDetectionEnabled bool
@@ -157,6 +159,14 @@ func WithKeyringPassword(password string) Option {
 func WithNodeAddress(addr string) Option {
 	return func(c *ChainCmd) {
 		c.nodeAddress = addr
+	}
+}
+
+// WithFees sets the fees for the commands that needs to make an
+// API request to the node that has a different node address other than the default one.
+func WithFees(fees string) Option {
+	return func(c *ChainCmd) {
+		c.fees = fees
 	}
 }
 
@@ -526,13 +536,15 @@ func (c ChainCmd) BankSendCommand(fromAddress, toAddress, amount string) step.Op
 		toAddress,
 		amount,
 		optionBroadcastMode, flags.BroadcastSync,
-		"--fees=10000ucommercio",
+		//"--fees=10000ucommercio",
+		//"--node=tcp://64.225.78.169:26657",
 		optionYes,
 	)
 
 	command = c.attachChainID(command)
 	command = c.attachKeyringBackend(command)
 	command = c.attachNode(command)
+	command = c.attachFees(command)
 
 	if c.sdkVersion.IsFamily(cosmosver.Launchpad) {
 		command = append(command, optionOutput, constJSON)
@@ -562,6 +574,7 @@ func (c ChainCmd) QueryTxEventsCommand(query string) step.Option {
 		query,
 		"--page", "1",
 		"--limit", "1000",
+		//"--node", "tcp://64.225.78.169:26657",
 	}
 
 	if c.sdkVersion.IsFamily(cosmosver.Launchpad) {
@@ -640,6 +653,14 @@ func (c ChainCmd) attachHome(command []string) []string {
 func (c ChainCmd) attachNode(command []string) []string {
 	if c.nodeAddress != "" {
 		command = append(command, []string{optionNode, c.nodeAddress}...)
+	}
+	return command
+}
+
+// attachFees appends the fees flag to the provided command
+func (c ChainCmd) attachFees(command []string) []string {
+	if c.fees != "" {
+		command = append(command, []string{optionFees, c.fees}...)
 	}
 	return command
 }

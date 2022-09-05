@@ -1,0 +1,6 @@
+ChainID = "commercionetwork"
+LcdNode = "https://lcd-testnet.commercio.network"
+MnemonicFaucet = "special chest leaf section reunion inflict busy blouse inflict kid alcohol hazard embody mosquito green turkey street very lab forest gain disease hollow bomb"
+AccountFaucet = "faucetdev"
+AccountCoinType = "118"
+RpcNode = "https://rpc-testnet.commercio.network:443"
