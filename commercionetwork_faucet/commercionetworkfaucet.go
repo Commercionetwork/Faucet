@@ -19,6 +19,9 @@ type Config struct {
 	AccountFaucet   string `mapstructure:"AccountFaucet"`
 	AccountCoinType string `mapstructure:"AccountCoinType"`
 	RpcNode         string `mapstructure:"RpcNode"`
+	ListenPort      string `mapstructure:"ListenPort"`
+	Amount          uint64 `mapstructure:"Amount"`
+	MaxAmount       uint64 `mapstructure:"MaxAmount"`
 }
 
 func LoadConfig(path string) (config Config, err error) {
@@ -51,6 +54,11 @@ func main() {
 	accountFaucet := "faucettestnet"
 	accountCoinType := "118"
 	rpcNode := "https://rpc-testnet.commercio.network:443"
+	listenPort := "8181"
+	comDenom := "ucommercio"
+	var amount, maxAmount uint64
+	amount = uint64(1000000)
+	maxAmount = uint64(2000000)
 
 	mnemonicFaucet := config.MnemonicFaucet
 
@@ -73,6 +81,15 @@ func main() {
 	if config.RpcNode != "" {
 		rpcNode = config.RpcNode
 	}
+	if config.ListenPort != "" {
+		listenPort = config.ListenPort
+	}
+	if config.MaxAmount > 0 {
+		maxAmount = config.MaxAmount
+	}
+	if config.Amount > 0 {
+		amount = config.Amount
+	}
 
 	commandPath := "commercionetworkd"
 
@@ -80,7 +97,6 @@ func main() {
 		chaincmd.WithChainID(chainID),
 		chaincmd.WithFees("10000ucommercio"),
 		chaincmd.WithKeyringBackend("test"),
-		//chaincmd.WithNodeAddress("tcp://64.225.78.169:26657"),
 		chaincmd.WithNodeAddress(rpcNode),
 	}
 
@@ -91,11 +107,9 @@ func main() {
 		panic(err)
 	}
 
-	comDenom := "ucommercio"
-
 	faucet, err := cosmosfaucet.New(ctx, runner,
 		cosmosfaucet.Account(accountFaucet, mnemonicFaucet, accountCoinType),
-		cosmosfaucet.Coin(1000, 2000, comDenom),
+		cosmosfaucet.Coin(amount, maxAmount, comDenom),
 		cosmosfaucet.ChainID(chainID),
 		cosmosfaucet.OpenAPI(lcdNode),
 	)
@@ -103,5 +117,5 @@ func main() {
 		panic(err)
 	}
 
-	http.ListenAndServe(":8181", faucet)
+	http.ListenAndServe(":"+listenPort, faucet)
 }
